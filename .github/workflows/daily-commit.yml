@@ -1,0 +1,26 @@
+name: Daily Commit Workflow
+
+on:
+  schedule:
+    - cron: '10 3 * * *'  # Runs every day at 03:10 UTC
+  workflow_dispatch:       # Allows manual trigger for testing
+
+jobs:
+  daily-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "DevSync Bot"
+          git config --global user.email "23f2001159@ds.study.iitm.ac.in"
+
+      - name: Update status file (23f2001159@ds.study.iitm.ac.in)
+        run: |
+          echo "Last update: $(date -u)" > status.txt
+          git add status.txt
+          git commit -m "Daily update on $(date -u)"
+          git push
