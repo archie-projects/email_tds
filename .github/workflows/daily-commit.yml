@@ -2,25 +2,35 @@ name: Daily Commit Workflow
 
 on:
   schedule:
-    - cron: '10 3 * * *'  # Runs every day at 03:10 UTC
+    - cron: '10 3 * * *'  # Runs every day at 03:10 UTC (fixed the syntax)
   workflow_dispatch:       # Allows manual triggering for testing
 
 jobs:
   daily-commit:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup Git
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          
+      - name: Setup Git configuration for 23f2001159@ds.study.iitm.ac.in
         run: |
-          git config --global user.name "DevSync Bot"
-          git config --global user.email "23f2001159@ds.study.iitm.ac.in"
-
-      - name: 23f2001159@ds.study.iitm.ac.in
+          git config --local user.name "DevSync Bot"
+          git config --local user.email "23f2001159@ds.study.iitm.ac.in"
+          
+      - name: Create daily update with 23f2001159@ds.study.iitm.ac.in
         run: |
           echo "Last update: $(date -u)" > status.txt
+          echo "DevSync Repository: email_tds" >> status.txt
+          echo "Automation Email: 23f2001159@ds.study.iitm.ac.in" >> status.txt
           git add status.txt
-          git commit -m "Daily update on $(date -u)"
+          git commit -m "Daily update on $(date -u)
+
+          DevSync Automation:
+          - Email: 23f2001159@ds.study.iitm.ac.in
+          - Repository: archie-projects/email_tds
+          - Automated daily maintenance"
           git push
