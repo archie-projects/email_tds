@@ -1,36 +1,26 @@
-name: Daily Commit Workflow
+name: Auto Commit Every 5 Minutes
 
 on:
   schedule:
-    - cron: '10 3 * * *'  # Runs every day at 03:10 UTC (fixed the syntax)
-  workflow_dispatch:       # Allows manual triggering for testing
+    - cron: '*/5 * * * *'  # Every 5 minutes UTC
+  workflow_dispatch:
 
 jobs:
-  daily-commit:
+  commit-job:
     runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-          
-      - name: Configure Git for 23f2001159@ds.study.iitm.ac.in
-        run: |
-          git config --local user.name "DevSync Bot"
-          git config --local user.email "23f2001159@ds.study.iitm.ac.in"
-          
-      - name: Generate daily commit for 23f2001159@ds.study.iitm.ac.in
-        run: |
-          echo "Last update: $(date -u)" > status.txt
-          echo "DevSync Repository: email_tds" >> status.txt
-          echo "Automation Email: 23f2001159@ds.study.iitm.ac.in" >> status.txt
-          git add status.txt
-          git commit -m "Daily update on $(date -u)
 
-          DevSync Automation:
-          - Email: 23f2001159@ds.study.iitm.ac.in
-          - Repository: archie-projects/email_tds
-          - Automated daily maintenance"
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Modify dummy file - 23f2001159@ds.study.iitm.ac.in
+        run: |
+          echo "Update at $(date -u)" >> activity.log
+
+      - name: Commit Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add activity.log
+          git commit -m "Automated commit $(date -u)" || echo "No changes to commit"
           git push
