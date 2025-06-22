@@ -1,8 +1,8 @@
-name: Auto Commit Every 5 Minutes
+name: Daily Auto Commit
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes UTC
+    - cron: '0 4 * * *'  # Runs every day at 04:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -13,14 +13,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Modify dummy file - 23f2001159@ds.study.iitm.ac.in
-        run: |
-          echo "Update at $(date -u)" >> activity.log
+      - name: Update log - 23f2001159@ds.study.iitm.ac.in
+        run: echo "Update at $(date -u)" >> daily.log
 
       - name: Commit Changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add activity.log
-          git commit -m "Automated commit $(date -u)" || echo "No changes to commit"
+          git add daily.log
+          git commit -m "Daily automated commit $(date -u)" || echo "No changes to commit"
           git push
